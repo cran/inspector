@@ -1,0 +1,256 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# inspector: Validation of Arguments and Objects in User-Defined Functions
+
+<!-- badges: start -->
+
+[![Build
+Status](https://travis-ci.com/pedro-teles-fonseca/inspector.svg?branch=master)](https://travis-ci.com/pedro-teles-fonseca/inspector)
+[![R build
+status](https://github.com/pedro-teles-fonseca/inspector/workflows/R-CMD-check/badge.svg)](https://github.com/pedro-teles-fonseca/inspector/actions)
+![pkgdown](https://github.com/pedro-teles-fonseca/inspector/workflows/pkgdown/badge.svg)
+[![codecov](https://codecov.io/gh/pedro-teles-fonseca/inspector/branch/master/graph/badge.svg?branch=master&kill_cache=1)](https://codecov.io/gh/pedro-teles-fonseca/inspector)
+[![MIT
+license](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://lbesson.mit-license.org/)
+<!-- badges: end -->
+
+## Overview
+
+The `inspector` package provides utility functions that implement and
+automate common sets of validation tasks, namely:
+
+  - `inspect_prob()` checks if an object is a numeric vector of valid
+    probability values.
+
+  - `inspect_log_base()` checks if an object is a valid logarithmic
+    base.
+
+  - `inspect_true_or_false()` checks if an object is a non-missing
+    logical value.
+
+  - `inspect_bfactor()` checks if an object is a numeric vector of valid
+    Bayes factors values.
+
+  - `inspect_bfactor_log()` checks if an object is a numeric vector of
+    valid logarithmic Bayes factors values.
+
+  - `inspect_bfactor_scale` validates Bayes factor interpretation scales
+    (from in the [`pcal`](https://pedro-teles-fonseca.github.io/pcal/)
+    package).
+
+  - `inspect_categories()` validates factor levels.
+
+  - `inspect_character()` validates character vectors.
+
+  - `inspect_character_match()` validates character values with
+    predefined allowed values.
+
+  - `inspect_data_dichotomous()` validates dichotomous data
+
+  - `inspect_data_categorical()` and `inspect_data_cat_as_dichotomous()`
+    validate categorical data.
+
+  - `inspect_par_bernoulli()` validates parameters for the Bernoulli and
+    Binomial distributions.
+
+  - `inspect_par_multinomial()` validates parameters for the Multinomial
+    distribution.
+
+  - `inspect_par_beta()` validates parameters for the Beta distribution.
+
+  - `inspect_par_dirichlet()` validates parameters for the Dirichlet
+    distribution.
+
+  - `inspect_par_haldane()` validates parameters for the Haldane
+    distribution.
+
+These functions are particularly useful to validate inputs, intermediate
+objects and output values in user-defined functions, resulting in tidier
+and less verbose functions.
+
+## Installation
+
+The development version of `inspector` can be installed from
+[GitHub](https://github.com/) using the
+[`devtools`](https://github.com/r-lib/devtools) package:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("pedro-teles-fonseca/inspector")
+```
+
+## Usage
+
+Imagine we want to write a function that simulates `n` flips of the same
+coin. Assuming that `bias` is the probability of the “heads” outcome:
+
+``` r
+
+set.seed(123)
+
+flip_coins <- function(n, bias){ 
+  
+  sample(x = c("heads", "tails"), size = n, replace = TRUE)
+}
+
+flip_coins(n = 5, bias = 0.5)
+#> [1] "heads" "heads" "heads" "tails" "heads"
+```
+
+Since `bias` is a probability, it is natural that we require
+`flip_coins()` to only accept values of `bias` between 0 and 1.
+Furthermore, we may want to ensure that `bias` is not null, not missing,
+and is a numeric vector of length 1. This results an a quite verbose
+function body:
+
+``` r
+
+set.seed(123)
+
+flip_coins <- function(n, bias){
+  
+  if(is.null(bias)){
+    stop(paste("Invalid argument: bias is NULL."))
+  }
+  if(any(isFALSE(is.atomic(bias)), isFALSE(is.vector(bias)))){
+    stop(paste("Invalid argument: bias must be an atomic vector."))
+  }
+  if(isFALSE(length(bias) == 1)){
+    stop(paste("Invalid argument: bias must be of length 1."))
+  }
+  if(is.na(bias)){
+    stop(paste("Invalid argument: bias is NA or NaN."))
+  }
+  if(isFALSE(is.numeric(bias))){
+    stop(paste("Invalid argument: bias must be numeric."))
+  }
+  if(any(bias >= 1, bias <= 0)) {
+    stop(paste("Invalid argument: bias must be in the (0, 1) interval."))
+  }
+  
+  sample(x = c("heads", "tails"), size = n, replace = TRUE)
+}
+
+flip_coins(n = 5, bias = 0.5)
+#> [1] "heads" "heads" "heads" "tails" "heads"
+```
+
+The `inspector` package was built to automate this kind of validation
+task. In the `flip_coins()` example, to perform an equivalent validation
+of inputs we can use `inspect_par_bernoulli`, since `bias` is the
+parameter of a Bernoulli distribution:
+
+``` r
+
+set.seed(123)
+
+flip_coins <- function(n, bias){
+  
+  inspect_par_bernoulli(bias)
+  
+  sample(x = c("heads", "tails"), size = n, replace = TRUE)
+}
+
+flip_coins(n = 5, bias = 0.5)
+#> [1] "heads" "heads" "heads" "tails" "heads"
+```
+
+This results in a tidier function body since the validation of `bias` is
+abstracted away from the body of the function.
+
+Now imagine we want to implement equation 4 from Berger and Delampady
+(1987), a formula that calculates posterior probabilities using prior
+probabilities and Bayes factors as input. In this case we need to
+validate a vector of Bayes factors, lets call it `bf`, and a vector of
+prior probabilities, lets call it `prior_prob`. Since `bf` is expected
+to contain valid Bayes factor values, we need to ensure that only
+non-empty numeric vectors, containing only non-negative values, are
+accepted. Since `prior_prob` is a vector of probabilities, we need to
+check if it is a non-empty numeric vector containing only values between
+0 and 1. Since we are now validating two inputs, the function body would
+be even more verbose than in the `flip_coins()` example:
+
+``` r
+bfactor_to_prob <- function(bf, prior_prob = .5) {
+
+  if(is.null(bf)){
+    stop(paste("Invalid argument: bf is NULL."))
+  }
+  if(any(isFALSE(is.atomic(bf)), isFALSE(is.vector(bf)))){
+    stop(paste("Invalid argument: bf must be an atomic vector."))
+  }
+  if(length(bf) == 0){
+    stop(paste("Invalid argument: bf is empty."))
+  }
+  if(all(is.na(bf))){
+    stop(paste("Invalid argument: all elements of bf are NA or NaN."))
+  }
+  if(isFALSE(is.numeric(bf))){
+    stop(paste("Invalid argument: the type of bf must be numeric."))
+  }
+  if(any(bf[!is.na(bf)] < 0)){
+    stop(paste("Invalid argument: all elements of bf must be non-negative."))
+  }
+  if(is.null(prior_prob)){
+    stop(paste("Invalid argument:", output_name, "is NULL."))
+  }
+  if(any(isFALSE(is.atomic(prior_prob)), isFALSE(is.vector(prior_prob)))){
+    stop(paste("Invalid argument:", output_name, "must be an atomic vector."))
+  }
+  if(length(prior_prob) == 0){
+    stop(paste("Invalid argument:", output_name, "is empty."))
+  }
+  if(all(is.na(prior_prob))){
+    stop(paste("Invalid argument: all elements of", output_name, "are NA or NaN."))
+  }
+  if(isFALSE(is.numeric(prior_prob))){
+    stop(paste("Invalid argument: the type of", output_name, "must be numeric."))
+  }
+  if(any(prior_prob[!is.na(prior_prob)] < 0, prior_prob[!is.na(prior_prob)] > 1)){
+    stop(paste("Invalid argument: all elements of",  output_name, "must be in the [0, 1] interval."))
+  }
+
+  (1 + (1 - prior_prob) / prior_prob * (1 / bf)) ^(-1)
+}
+
+bfactor_to_prob(c(2.1, 0.5, 11))
+#> [1] 0.6774194 0.3333333 0.9166667
+```
+
+Now lets use `inspector` instead. To perform an equivalent validation of
+inputs we can use `inspect_bfactor()` to validate `bf` and
+`inspect_prob()` to validate `prior_prob`:
+
+``` r
+bfactor_to_prob <- function(bf, prior_prob = .5) {
+
+  inspect_bfactor(bf)
+  inspect_prob(prior_prob)
+
+  (1 + (1 - prior_prob) / prior_prob * (1 / bf)) ^(-1)
+}
+
+bfactor_to_prob(c(2.1, 0.5, 11))
+#> [1] 0.6774194 0.3333333 0.9166667
+```
+
+## Getting Help
+
+If you find a bug, please file an issue with a minimal reproducible
+example on [GitHub](https://github.com/pedro-teles-fonseca/inspector).
+Feature requests are also welcome. You can contact me at
+<pedro.teles.fonseca@phd.iseg.ulisboa.pt>.
+
+## References
+
+<div id="refs" class="references hanging-indent">
+
+<div id="ref-bergerDelampady1987">
+
+Berger, James O., and Mohan Delampady. 1987. “Testing Precise
+Hypotheses.” *Statistical Science* 2 (3): 317–35.
+
+</div>
+
+</div>
