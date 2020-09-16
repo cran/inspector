@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/pcal)](https://CRAN.R-project.org/package=inspector)
 [![Build
 Status](https://travis-ci.com/pedro-teles-fonseca/inspector.svg?branch=master)](https://travis-ci.com/pedro-teles-fonseca/inspector)
 [![R build
@@ -35,9 +37,9 @@ automate common sets of validation tasks, namely:
   - `inspect_bfactor_log()` checks if an object is a numeric vector of
     valid logarithmic Bayes factors values.
 
-  - `inspect_bfactor_scale` validates Bayes factor interpretation scales
-    (from in the [`pcal`](https://pedro-teles-fonseca.github.io/pcal/)
-    package).
+  - `inspect_bfactor_scale()` validates Bayes factor interpretation
+    scales (from the
+    [`pcal`](https://pedro-teles-fonseca.github.io/pcal/) package).
 
   - `inspect_categories()` validates factor levels.
 
