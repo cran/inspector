@@ -9,14 +9,14 @@
 The \code{inspector} package provides utility functions that implement and automate common sets of validation tasks. These functions are particularly useful to validate inputs, intermediate objects and output values in user-defined functions, resulting in tidier and less verbose functions.
 }
 \details{
-For a complete list of functions see \code{library(help = "inspector")}. For instructions and examples see the "Usage" section of the \href{https://github.com/pedro-teles-fonseca/inspector/blob/master/README.md}{README}.
+For a complete list of functions see \code{library(help = "inspector")}. For instructions and examples see the "Usage" section of the \href{https://github.com/ptfonseca/inspector/blob/master/README.md}{README}.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://pedro-teles-fonseca.github.io/inspector/}
-  \item \url{https://github.com/pedro-teles-fonseca/inspector}
-  \item Report bugs at \url{https://github.com/pedro-teles-fonseca/inspector/issues}
+  \item \url{https://ptfonseca.github.io/inspector/}
+  \item \url{https://github.com/ptfonseca/inspector}
+  \item Report bugs at \url{https://github.com/ptfonseca/inspector/issues}
 }
 
 }
