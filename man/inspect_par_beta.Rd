@@ -10,17 +10,23 @@ inspect_par_beta(x)
 \item{x}{An arbitrary object.}
 }
 \value{
-\code{inspect_par_beta} does not return any output. There are two possible outcomes:
+\code{inspect_par_beta} does not return any output. There are two possible
+outcomes:
 \itemize{
-\item The call is silent if \code{x} is an eligible vector of parameters for the Beta distribution.
+\item The call is silent if \code{x} is an eligible vector of parameters for the Beta
+distribution.
 \item An informative error message is thrown otherwise.
 }
 }
 \description{
-\code{inspect_par_beta} checks if an object is an eligible vector of parameters for the Beta distribution. This can be useful to validate inputs, intermediate calculations or outputs in user-defined functions.
+\code{inspect_par_beta} checks if an object is an eligible vector of
+parameters for the Beta distribution. This can be useful to validate inputs,
+intermediate calculations or outputs in user-defined functions.
 }
 \details{
-\code{inspect_par_beta} conducts a series of tests to check if \code{x} is an eligible vector of parameters for the Beta distribution. Namely, \code{inspect_par_beta} checks if:
+\code{inspect_par_beta} conducts a series of tests to check if \code{x} is an
+eligible vector of parameters for the Beta distribution. Namely,
+\code{inspect_par_beta} checks if:
 \itemize{
 \item \code{x} is \code{NULL} or empty.
 \item \code{x} is an atomic vector
@@ -38,9 +44,11 @@ inspect_par_beta(x1)
 inspect_par_beta(x2)
 
 # Calls that throw an informative error message:
-mylist <- list(NULL, 1, factor(1, 1),
+mylist <- list(
+  NULL, 1, factor(1, 1),
   matrix(c(1, 1)), c("1", "1"), list(1, 1), c(1, NA),
-  c(1, NaN), c(TRUE, FALSE), numeric(0), c(-1, 1))
+  c(1, NaN), c(TRUE, FALSE), numeric(0), c(-1, 1)
+)
 try(inspect_par_beta(mylist[[1]]))
 try(inspect_par_beta(mylist[[2]]))
 try(inspect_par_beta(mylist[[3]]))
@@ -52,13 +60,16 @@ try(inspect_par_beta(mylist[[8]]))
 try(inspect_par_beta(mylist[[9]]))
 try(inspect_par_beta(mylist[[10]]))
 try(inspect_par_beta(mylist[[11]]))
-
 }
 \seealso{
 \itemize{
-\item \code{\link[inspector]{inspect_par_bernoulli}} to validate parameters for the Bernoulli/Binomial distribution.
-\item \code{\link[inspector]{inspect_par_multinomial}} to validate parameters for the Multinomial distribution.
-\item \code{\link[inspector]{inspect_par_dirichlet}} to validate parameters for the Dirichlet distribution.
-\item \code{\link[inspector]{inspect_par_haldane}} to validate parameters for the Haldane distribution.
+\item \code{\link[inspector]{inspect_par_bernoulli}} to validate parameters for
+the Bernoulli/Binomial distribution.
+\item \code{\link[inspector]{inspect_par_multinomial}} to validate parameters for
+the Multinomial distribution.
+\item \code{\link[inspector]{inspect_par_dirichlet}} to validate parameters for
+the Dirichlet distribution.
+\item \code{\link[inspector]{inspect_par_haldane}} to validate parameters for the
+Haldane distribution.
 }
 }

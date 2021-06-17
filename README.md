@@ -12,7 +12,7 @@ Status](https://travis-ci.com/ptfonseca/inspector.svg?branch=master)](https://tr
 [![R build
 status](https://github.com/ptfonseca/inspector/workflows/R-CMD-check/badge.svg)](https://github.com/ptfonseca/inspector/actions)
 ![pkgdown](https://github.com/ptfonseca/inspector/workflows/pkgdown/badge.svg)
-[![codecov](https://codecov.io/gh/ptfonseca/inspector/branch/master/graph/badge.svg?branch=master&kill_cache=1)](https://codecov.io/gh/ptfonseca/inspector)
+[![codecov](https://codecov.io/gh/ptfonseca/inspector/branch/master/graph/badge.svg?token=08DXY4X1CR)](https://codecov.io/gh/ptfonseca/inspector)
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
@@ -22,49 +22,49 @@ MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensour
 The `inspector` package provides utility functions that implement and
 automate common sets of validation tasks, namely:
 
-  - `inspect_prob()` checks if an object is a numeric vector of valid
+-   `inspect_prob()` checks if an object is a numeric vector of valid
     probability values.
 
-  - `inspect_log_base()` checks if an object is a valid logarithmic
+-   `inspect_log_base()` checks if an object is a valid logarithmic
     base.
 
-  - `inspect_true_or_false()` checks if an object is a non-missing
+-   `inspect_true_or_false()` checks if an object is a non-missing
     logical value.
 
-  - `inspect_bfactor()` checks if an object is a numeric vector of valid
+-   `inspect_bfactor()` checks if an object is a numeric vector of valid
     Bayes factors values.
 
-  - `inspect_bfactor_log()` checks if an object is a numeric vector of
+-   `inspect_bfactor_log()` checks if an object is a numeric vector of
     valid logarithmic Bayes factors values.
 
-  - `inspect_bfactor_scale()` validates Bayes factor interpretation
+-   `inspect_bfactor_scale()` validates Bayes factor interpretation
     scales (from the [`pcal`](https://ptfonseca.github.io/pcal/)
     package).
 
-  - `inspect_categories()` validates factor levels.
+-   `inspect_categories()` validates factor levels.
 
-  - `inspect_character()` validates character vectors.
+-   `inspect_character()` validates character vectors.
 
-  - `inspect_character_match()` validates character values with
+-   `inspect_character_match()` validates character values with
     predefined allowed values.
 
-  - `inspect_data_dichotomous()` validates dichotomous data
+-   `inspect_data_dichotomous()` validates dichotomous data
 
-  - `inspect_data_categorical()` and `inspect_data_cat_as_dichotomous()`
+-   `inspect_data_categorical()` and `inspect_data_cat_as_dichotom()`
     validate categorical data.
 
-  - `inspect_par_bernoulli()` validates parameters for the Bernoulli and
+-   `inspect_par_bernoulli()` validates parameters for the Bernoulli and
     Binomial distributions.
 
-  - `inspect_par_multinomial()` validates parameters for the Multinomial
+-   `inspect_par_multinomial()` validates parameters for the Multinomial
     distribution.
 
-  - `inspect_par_beta()` validates parameters for the Beta distribution.
+-   `inspect_par_beta()` validates parameters for the Beta distribution.
 
-  - `inspect_par_dirichlet()` validates parameters for the Dirichlet
+-   `inspect_par_dirichlet()` validates parameters for the Dirichlet
     distribution.
 
-  - `inspect_par_haldane()` validates parameters for the Haldane
+-   `inspect_par_haldane()` validates parameters for the Haldane
     distribution.
 
 These functions are particularly useful to validate inputs, intermediate
@@ -73,9 +73,8 @@ and less verbose functions.
 
 ## Installation
 
-The development version of `inspector` can be installed from
-[GitHub](https://github.com/) using the
-[`devtools`](https://github.com/r-lib/devtools) package:
+The development version of `inspector` can be installed from Github with
+the [`devtools`](https://devtools.r-lib.org) package:
 
 ``` r
 # install.packages("devtools")
@@ -88,10 +87,9 @@ Imagine we want to write a function that simulates `n` flips of the same
 coin. Assuming that `bias` is the probability of the “heads” outcome:
 
 ``` r
-
 set.seed(123)
 
-flip_coins <- function(n, bias){ 
+flip_coins <- function(n, bias) { 
   
   sample(x = c("heads", "tails"), size = n, replace = TRUE)
 }
@@ -107,27 +105,26 @@ and is a numeric vector of length 1. This results an a quite verbose
 function body:
 
 ``` r
-
 set.seed(123)
 
-flip_coins <- function(n, bias){
+flip_coins <- function(n, bias) {
   
-  if(is.null(bias)){
+  if (is.null(bias)) {
     stop(paste("Invalid argument: bias is NULL."))
   }
-  if(any(isFALSE(is.atomic(bias)), isFALSE(is.vector(bias)))){
+  if (any(isFALSE(is.atomic(bias)), isFALSE(is.vector(bias)))) {
     stop(paste("Invalid argument: bias must be an atomic vector."))
   }
-  if(isFALSE(length(bias) == 1)){
+  if (isFALSE(length(bias) == 1)) {
     stop(paste("Invalid argument: bias must be of length 1."))
   }
-  if(is.na(bias)){
+  if (is.na(bias)) {
     stop(paste("Invalid argument: bias is NA or NaN."))
   }
-  if(isFALSE(is.numeric(bias))){
+  if (isFALSE(is.numeric(bias))) {
     stop(paste("Invalid argument: bias must be numeric."))
   }
-  if(any(bias >= 1, bias <= 0)) {
+  if (any(bias >= 1, bias <= 0)) {
     stop(paste("Invalid argument: bias must be in the (0, 1) interval."))
   }
   
@@ -144,10 +141,9 @@ of inputs we can use `inspect_par_bernoulli`, since `bias` is the
 parameter of a Bernoulli distribution:
 
 ``` r
-
 set.seed(123)
 
-flip_coins <- function(n, bias){
+flip_coins <- function(n, bias) {
   
   inspect_par_bernoulli(bias)
   
@@ -176,40 +172,40 @@ be even more verbose than in the `flip_coins()` example:
 ``` r
 bfactor_to_prob <- function(bf, prior_prob = .5) {
 
-  if(is.null(bf)){
+  if (is.null(bf)) {
     stop(paste("Invalid argument: bf is NULL."))
   }
-  if(any(isFALSE(is.atomic(bf)), isFALSE(is.vector(bf)))){
+  if (any(isFALSE(is.atomic(bf)), isFALSE(is.vector(bf)))) {
     stop(paste("Invalid argument: bf must be an atomic vector."))
   }
-  if(length(bf) == 0){
+  if (length(bf) == 0) {
     stop(paste("Invalid argument: bf is empty."))
   }
-  if(all(is.na(bf))){
+  if (all(is.na(bf))) {
     stop(paste("Invalid argument: all elements of bf are NA or NaN."))
   }
-  if(isFALSE(is.numeric(bf))){
+  if (isFALSE(is.numeric(bf))) {
     stop(paste("Invalid argument: the type of bf must be numeric."))
   }
-  if(any(bf[!is.na(bf)] < 0)){
+  if (any(bf[!is.na(bf)] < 0)) {
     stop(paste("Invalid argument: all elements of bf must be non-negative."))
   }
-  if(is.null(prior_prob)){
+  if (is.null(prior_prob)) {
     stop(paste("Invalid argument:", output_name, "is NULL."))
   }
-  if(any(isFALSE(is.atomic(prior_prob)), isFALSE(is.vector(prior_prob)))){
+  if (any(isFALSE(is.atomic(prior_prob)), isFALSE(is.vector(prior_prob)))) {
     stop(paste("Invalid argument:", output_name, "must be an atomic vector."))
   }
-  if(length(prior_prob) == 0){
+  if (length(prior_prob) == 0) {
     stop(paste("Invalid argument:", output_name, "is empty."))
   }
-  if(all(is.na(prior_prob))){
+  if (all(is.na(prior_prob))) {
     stop(paste("Invalid argument: all elements of", output_name, "are NA or NaN."))
   }
-  if(isFALSE(is.numeric(prior_prob))){
+  if (isFALSE(is.numeric(prior_prob))) {
     stop(paste("Invalid argument: the type of", output_name, "must be numeric."))
   }
-  if(any(prior_prob[!is.na(prior_prob)] < 0, prior_prob[!is.na(prior_prob)] > 1)){
+  if (any(prior_prob[!is.na(prior_prob)] < 0, prior_prob[!is.na(prior_prob)] > 1)) {
     stop(paste("Invalid argument: all elements of",  output_name, "must be in the [0, 1] interval."))
   }
 
@@ -240,15 +236,15 @@ bfactor_to_prob(c(2.1, 0.5, 11))
 ## Getting Help
 
 If you find a bug, please file an issue with a minimal reproducible
-example on [GitHub](https://github.com/ptfonseca/inspector). Feature
-requests are also welcome. You can contact me at
+example on [GitHub](https://github.com/ptfonseca/inspector/issues).
+Feature requests are also welcome. You can find me at
 <ptfonseca@iseg.ulisboa.pt>.
 
 ## References
 
-<div id="refs" class="references hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent">
 
-<div id="ref-bergerDelampady1987">
+<div id="ref-bergerDelampady1987" class="csl-entry">
 
 Berger, James O., and Mohan Delampady. 1987. “Testing Precise
 Hypotheses.” *Statistical Science* 2 (3): 317–35.

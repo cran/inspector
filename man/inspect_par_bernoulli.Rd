@@ -10,17 +10,22 @@ inspect_par_bernoulli(x)
 \item{x}{An arbitrary object.}
 }
 \value{
-\code{inspect_par_bernoulli} does not return any output. There are two possible outcomes:
+\code{inspect_par_bernoulli} does not return any output. There are two
+possible outcomes:
 \itemize{
 \item The call is silent if \code{x} is an eligible Bernoulli/Binomial proportion.
 \item An informative error message is thrown otherwise.
 }
 }
 \description{
-\code{inspect_par_bernoulli} checks if an object is an eligible Bernoulli/Binomial proportion. This can be useful to validate inputs, intermediate calculations or outputs in user-defined functions.
+\code{inspect_par_bernoulli} checks if an object is an eligible
+Bernoulli/Binomial proportion. This can be useful to validate inputs,
+intermediate calculations or outputs in user-defined functions.
 }
 \details{
-\code{inspect_par_bernoulli} conducts a series of tests to check if \code{x} is an eligible Bernoulli/Binomial proportion. Namely, \code{inspect_par_bernoulli} checks if:
+\code{inspect_par_bernoulli} conducts a series of tests to check if \code{x}
+is an eligible Bernoulli/Binomial proportion. Namely, \code{inspect_par_bernoulli}
+checks if:
 \itemize{
 \item \code{x} is \code{NULL} or empty.
 \item \code{x} is an atomic vector
@@ -37,8 +42,10 @@ inspect_par_bernoulli(x)
 inspect_par_bernoulli(0.1)
 
 # Calls that throw an informative error message:
-mylist <- list(NULL, TRUE, factor(.5), matrix(0.5), "0.5",
-  list(0.5), NA, NaN, numeric(0), c(0.1, 0.5), -0.5, 1.1)
+mylist <- list(
+  NULL, TRUE, factor(.5), matrix(0.5), "0.5",
+  list(0.5), NA, NaN, numeric(0), c(0.1, 0.5), -0.5, 1.1
+)
 try(inspect_par_bernoulli(mylist[[1]]))
 try(inspect_par_bernoulli(mylist[[2]]))
 try(inspect_par_bernoulli(mylist[[3]]))
@@ -51,15 +58,20 @@ try(inspect_par_bernoulli(mylist[[9]]))
 try(inspect_par_bernoulli(mylist[[10]]))
 try(inspect_par_bernoulli(mylist[[11]]))
 try(inspect_par_bernoulli(mylist[[12]]))
-
 }
 \seealso{
 \itemize{
-\item \code{\link[inspector]{inspect_par_multinomial}} to validate parameters for the Multinomial distribution.
-\item \code{\link[inspector]{inspect_par_beta}} to validate parameters for the Beta distribution.
-\item \code{\link[inspector]{inspect_par_dirichlet}} to validate parameters for the Dirichlet distribution.
-\item \code{\link[inspector]{inspect_par_haldane}} to validate parameters for the Haldane distribution.
-\item \code{\link[inspector]{inspect_data_dichotomous}} to validate dichotomous data.
-\item \code{\link[inspector]{inspect_prob}} to check if an object is a numeric vector of valid probability values.
+\item \code{\link[inspector]{inspect_par_multinomial}} to validate parameters for
+the Multinomial distribution.
+\item \code{\link[inspector]{inspect_par_beta}} to validate parameters for the
+Beta distribution.
+\item \code{\link[inspector]{inspect_par_dirichlet}} to validate parameters for
+the Dirichlet distribution.
+\item \code{\link[inspector]{inspect_par_haldane}} to validate parameters for the
+Haldane distribution.
+\item \code{\link[inspector]{inspect_data_dichotomous}} to validate dichotomous
+data.
+\item \code{\link[inspector]{inspect_prob}} to check if an object is a numeric
+vector of valid probability values.
 }
 }
